@@ -48,7 +48,7 @@ watch(() => props.modelValue, (val) => {
 
 const startEdit = () => {
   if (props.isArchived) {
-    const msg = props.isAuditor ? '审计只读模式，无法修改' : '该会议已归档，无法修改';
+    const msg = props.isAuditor ? '审查只读模式，无法修改' : '该会议已归档，无法修改';
     ElMessage.warning(msg);
     return; // ★ 核心修复：直接阻断
   }

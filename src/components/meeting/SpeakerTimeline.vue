@@ -117,7 +117,7 @@ const submitRenameSpeaker = (newName: string) => {
 
 const checkArchived = () => {
   if (props.isArchived) {
-    const msg = props.isAuditor ? '审计只读模式，无法修改' : '该会议已归档，无法修改';
+    const msg = props.isAuditor ? '审查只读模式，无法修改' : '该会议已归档，无法修改';
     ElMessage.warning(msg);
   }
 };
@@ -126,7 +126,7 @@ const editingIndex = ref(-1);
 
 const startEdit = (index: number) => {
   if (props.isArchived) {
-    const msg = props.isAuditor ? '审计只读模式，无法修改' : '该会议已归档，无法修改';
+    const msg = props.isAuditor ? '审查只读模式，无法修改' : '该会议已归档，无法修改';
     ElMessage.warning(msg);
     return;
   }

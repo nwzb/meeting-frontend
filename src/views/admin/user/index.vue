@@ -96,7 +96,7 @@
         <el-radio-group v-model="selectedRole" class="role-radio-group">
           <el-radio :label="1" border>普通用户</el-radio>
           <el-radio :label="2" border>运维管理员</el-radio>
-          <el-radio :label="3" border>审计管理员</el-radio>
+          <el-radio :label="3" border>审查管理员</el-radio>
         </el-radio-group>
       </div>
       <template #footer>
@@ -145,7 +145,7 @@ const isSuperAdmin = computed(() => userStore.userInfo?.role === 9)
 
 // 角色名称与样式映射
 const getRoleName = (role: number) => {
-  const map: Record<number, string> = { 0: '已封禁', 1: '普通用户', 2: '运维管理员', 3: '审计管理员', 9: '超级管理员' }
+  const map: Record<number, string> = { 0: '已封禁', 1: '普通用户', 2: '运维管理员', 3: '审查管理员', 9: '超级管理员' }
   return map[role] || '未知角色'
 }
 const getRoleTagType = (role: number) => {

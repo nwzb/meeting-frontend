@@ -2,7 +2,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 /**
  * 路由配置表
- * meta.roles: 1-普通用户, 2-运维, 3-审计, 9-超管
+ * meta.roles: 1-普通用户, 2-运维, 3-审查, 9-超管
  */
 export const routes: RouteRecordRaw[] = [
     // 1. 登录页 (独立布局)
@@ -106,11 +106,11 @@ export const routes: RouteRecordRaw[] = [
         ]
     },
 
-    // 4. 合规审计管理员路由
+    // 4. 合规审查管理员路由
     {
         path: '/admin/audit',
         component: () => import('@/layout/MainLayout.vue'),
-        meta: { title: '合规审计', icon: 'Checked', roles: [3, 9] },
+        meta: { title: '合规审查', icon: 'Checked', roles: [3, 9] },
         redirect: '/admin/audit/meetings',
         children: [
             {

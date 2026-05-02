@@ -42,7 +42,7 @@ export interface WordQuery {
     keyword?: string
 }
 
-// ================= 会议审计相关 =================
+// ================= 会议审查相关 =================
 export interface MeetingAuditDTO {
     meetingId: number
     auditStatus: number // 0-正常, 1-已归档, 2-违规屏蔽

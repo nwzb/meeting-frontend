@@ -8,7 +8,7 @@
         <StatusTag :status="meetingStore.currentMeeting?.status" />
 
         <el-tag v-if="isAuditorMode" type="warning" effect="dark" style="margin-left: 12px; border-radius: 12px;">
-          审计只读模式
+          审查只读模式
         </el-tag>
 
         <el-tag v-if="isArchived" type="warning" effect="dark" style="margin-left: 12px; border-radius: 12px;">
@@ -377,7 +377,7 @@ const isReadOnly = computed(() => isArchived.value || isAuditorMode.value);
 
 const showArchiveMsg = () => {
   if (isAuditorMode.value) {
-    ElMessage.warning('审计只读模式，无法修改');
+    ElMessage.warning('审查只读模式，无法修改');
   } else {
     ElMessage.warning('该会议已归档，无法修改');
   }

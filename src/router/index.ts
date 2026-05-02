@@ -25,7 +25,7 @@ router.beforeEach(async (to, _from, next) => {
             next({ path: '/' });
         } else {
             // 检查是否有角色权限 (初步校验)
-            // 如果去的是管理员页面，但角色不是 2(运维), 3(审计), 9(超管)，则拦截
+            // 如果去的是管理员页面，但角色不是 2(运维), 3(审查), 9(超管)，则拦截
             if (to.path.startsWith('/admin') && userStore.role === 1) {
                 ElMessage.error('权限不足，无法访问管理面板');
                 next({ path: '/403' });

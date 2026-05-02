@@ -1,4 +1,4 @@
-// 审计
+// 审查
 import request from '@/utils/request'
 import type { TopicVO, TopicDTO, WordVO, WordDTO, WordQuery, MeetingAuditDTO } from '@/types/audit'
 import type { PageResult, Result } from '@/types/common'
@@ -33,7 +33,7 @@ export function deleteWord(id: number): Promise<Result<any>> {
     return request.delete(`/api/admin/audit/word/${id}`)
 }
 
-// ==================== 会议审计接口 ====================
+// ==================== 会议审查接口 ====================
 
 export function getAuditMeetingList(
     current = 1,

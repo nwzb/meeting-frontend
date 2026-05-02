@@ -3,7 +3,7 @@
     <el-card shadow="never" class="feishu-card main-card">
       <template #header>
         <div class="card-header">
-          <span class="title">全平台会议审计台</span>
+          <span class="title">全平台会议审查台</span>
           <div class="header-actions">
             <el-button
                 type="warning"
@@ -86,7 +86,7 @@
 
         <el-table-column prop="createTime" label="创建时间" width="180" sortable="custom" />
 
-        <el-table-column label="审计操作" width="200" fixed="right">
+        <el-table-column label="审查操作" width="200" fixed="right">
           <template #default="scope">
             <el-button
                 link
@@ -267,7 +267,7 @@ const resetQuery = () => {
 // =========== 状态操作逻辑 ===========
 const handleStatusChange = (meetingId: number, targetStatus: number) => {
   const actionText = targetStatus === 0 ? '解除管控并恢复正常' : '归档该会议（用户将无法修改）'
-  ElMessageBox.confirm(`确定要 ${actionText} 吗?`, '审计操作', {
+  ElMessageBox.confirm(`确定要 ${actionText} 吗?`, '审查操作', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: targetStatus === 0 ? 'success' : 'info',
