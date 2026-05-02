@@ -14,6 +14,9 @@
         <el-tag v-if="isArchived" type="warning" effect="dark" style="margin-left: 12px; border-radius: 12px;">
           已归档
         </el-tag>
+        <el-tag v-if="isBlocked" type="danger" effect="dark" style="margin-left: 12px; border-radius: 12px;">
+          已屏蔽
+        </el-tag>
 
         <el-tag
             v-if="sensitiveWordCount > 0"
@@ -364,6 +367,7 @@ const uniqueSpeakers = computed(() => {
 });
 
 const isArchived = computed(() => meetingStore.currentMeeting?.auditStatus === 1);
+const isBlocked = computed(() => meetingStore.currentMeeting?.auditStatus === 2);
 
 const isAuditorMode = computed(() => {
   const meetingUserId = meetingStore.currentMeeting?.userId;

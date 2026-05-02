@@ -50,9 +50,17 @@
 
         <el-table-column prop="duration" label="时长(秒)" width="120" sortable="custom" />
 
-        <el-table-column label="状态" width="120">
+        <el-table-column label="状态" width="200">
           <template #default="{ row }">
-            <StatusTag :status="row.status" />
+            <div class="status-cell">
+              <StatusTag :status="row.status" />
+              <el-tag v-if="row.auditStatus === 1" type="warning" effect="dark" round size="small">
+                已归档
+              </el-tag>
+              <el-tag v-if="row.auditStatus === 2" type="danger" effect="dark" round size="small">
+                已屏蔽
+              </el-tag>
+            </div>
           </template>
         </el-table-column>
 
@@ -60,7 +68,22 @@
 
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" @click="goToDetail(row.id)">查看</el-button>
+            <el-button
+                v-if="row.auditStatus !== 2"
+                link
+                type="primary"
+                @click="goToDetail(row.id)"
+            >
+              查看
+            </el-button>
+            <el-button
+                v-else
+                link
+                type="danger"
+                @click="showBlockedDialog(row)"
+            >
+              查看
+            </el-button>
             <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -132,6 +155,24 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <el-dialog
+        v-model="blockedDialogVisible"
+        title="会议已被屏蔽"
+        width="420px"
+        :close-on-click-modal="false"
+    >
+      <div class="blocked-dialog-content">
+        <el-icon :size="48" color="#f56c6c" style="display: block; margin: 0 auto 16px;">
+          <WarningFilled />
+        </el-icon>
+        <p class="blocked-reason">{{ blockedReason || '该会议因涉及敏感内容已被系统屏蔽' }}</p>
+        <p class="blocked-hint">如有问题请联系管理员</p>
+      </div>
+      <template #footer>
+        <el-button type="primary" @click="blockedDialogVisible = false">知道了</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -143,7 +184,7 @@ import { storeToRefs } from 'pinia';
 import { meetingApi } from '@/api/meeting';
 import { useDictStore } from '@/store/dict';
 import StatusTag from '@/components/common/StatusTag.vue';
-import { Microphone, Search, Plus, UploadFilled } from '@element-plus/icons-vue';
+import { Microphone, Search, Plus, UploadFilled, WarningFilled } from '@element-plus/icons-vue';
 
 const dictStore = useDictStore();
 const { topicLibraries } = storeToRefs(dictStore);
@@ -170,6 +211,14 @@ const uploadForm = ref({
   file: null as File | null,
   duration: 0
 });
+
+const blockedDialogVisible = ref(false);
+const blockedReason = ref('');
+
+const showBlockedDialog = (row: any) => {
+  blockedReason.value = row.auditReason || '该会议因涉及敏感内容已被系统屏蔽';
+  blockedDialogVisible.value = true;
+};
 
 let pollTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -348,6 +397,11 @@ const handleDelete = (row: any) => {
   }
 
   .meeting-table {
+    .status-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .meeting-info-cell {
       display: flex;
       align-items: center;
@@ -364,5 +418,21 @@ const handleDelete = (row: any) => {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
+}
+
+.blocked-dialog-content {
+  text-align: center;
+  padding: 8px 0;
+  .blocked-reason {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.6;
+    margin: 0 0 12px;
+  }
+  .blocked-hint {
+    font-size: 13px;
+    color: #999;
+    margin: 0;
+  }
 }
 </style>
