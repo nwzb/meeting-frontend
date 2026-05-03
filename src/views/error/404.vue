@@ -1,0 +1,21 @@
+<template>
+  <div class="error-page">
+    <el-result title="404" sub-title="抱歉，您访问的页面不存在">
+      <template #icon>
+        <el-image src="https://shadow.elemecdn.com/app/element/hamburger.9cf77501-2753-11e6-ad3a-d14d05127059.png" />
+      </template>
+      <template #extra>
+        <el-button type="primary" @click="$router.push('/')">返回首页</el-button>
+      </template>
+    </el-result>
+  </div>
+</template>
+
+<style scoped>
+.error-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>
