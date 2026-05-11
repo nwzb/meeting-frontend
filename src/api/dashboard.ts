@@ -33,12 +33,15 @@ export interface RagSource {
 export interface RagResponse {
     answer: string;
     sources: RagSource[];
+    fallback?: boolean;
+    message?: string;
 }
 
 /**
  * 全局 RAG 问答接口
  * @param question 用户提问
+ * @param deepSearch 是否启用超深度检索（跳过一级粗排）
  */
-export const askRag = (question: string) => {
-    return request.post<any, Result<RagResponse>>('/api/dashboard/rag/ask', { question })
+export const askRag = (question: string, deepSearch: boolean = false) => {
+    return request.post<any, Result<RagResponse>>('/api/dashboard/rag/ask', { question, deepSearch })
 }

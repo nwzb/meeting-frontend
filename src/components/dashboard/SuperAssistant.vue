@@ -71,6 +71,25 @@
           <div class="error-text" v-if="msg.status === 'error'">
             <el-icon><Warning /></el-icon> {{ msg.errorMsg }}
           </div>
+
+          <div class="fallback-actions" v-if="msg.status === 'fallback'">
+            <div class="fallback-notice">
+              <el-icon><Warning /></el-icon>
+              <span>{{ msg.content }}</span>
+            </div>
+            <el-button
+                type="warning"
+                size="small"
+                :loading="isDeepSearching"
+                @click="triggerDeepSearch"
+            >
+              尝试超深度检索
+            </el-button>
+            <div class="deep-search-hint" v-if="isDeepSearching">
+              <el-icon class="is-loading"><Loading /></el-icon>
+              超深度检索正在对全部历史会议进行深度匹配，请耐心等待...
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -101,7 +120,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted, watch } from 'vue'
-import { Opportunity, Monitor, User, Position, Link, Warning, FullScreen, CopyDocument, Delete } from '@element-plus/icons-vue'
+import { Opportunity, Monitor, User, Position, Link, Warning, FullScreen, CopyDocument, Delete, Loading } from '@element-plus/icons-vue'
 import { askRag } from '@/api/dashboard'
 import type { RagSource } from '@/api/dashboard'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -111,6 +130,8 @@ const CHAT_STORAGE_KEY = 'rag_assistant_chat_history'
 
 const inputText = ref('')
 const isGenerating = ref(false)
+const isDeepSearching = ref(false)
+const lastQuestion = ref('')
 const chatBodyRef = ref<HTMLElement | null>(null)
 
 const isExpanded = ref(false)
@@ -122,7 +143,7 @@ const toggleExpand = () => {
 interface ChatMessage {
   role: 'user' | 'ai'
   content: string
-  status?: 'success' | 'loading' | 'error'
+  status?: 'success' | 'loading' | 'error' | 'fallback'
   errorMsg?: string
   sources?: RagSource[]
 }
@@ -179,6 +200,8 @@ const sendMessage = async () => {
   const text = inputText.value.trim()
   if (!text || isGenerating.value) return
 
+  lastQuestion.value = text
+
   messageList.value.push({ role: 'user', content: text })
   inputText.value = ''
   scrollToBottom()
@@ -191,11 +214,20 @@ const sendMessage = async () => {
   try {
     const res = await askRag(text)
     if (res.code === 200 && res.data) {
-      messageList.value[aiMsgIndex] = {
-        role: 'ai',
-        content: res.data.answer,
-        status: 'success',
-        sources: res.data.sources
+      if (res.data.fallback) {
+        messageList.value[aiMsgIndex] = {
+          role: 'ai',
+          content: res.data.message || '检索结果相关度较低',
+          status: 'fallback',
+          sources: res.data.sources
+        }
+      } else {
+        messageList.value[aiMsgIndex] = {
+          role: 'ai',
+          content: res.data.answer,
+          status: 'success',
+          sources: res.data.sources
+        }
       }
     } else {
       messageList.value[aiMsgIndex] = {
@@ -215,6 +247,50 @@ const sendMessage = async () => {
     }
   } finally {
     isGenerating.value = false
+    scrollToBottom()
+  }
+}
+
+const triggerDeepSearch = async () => {
+  if (isDeepSearching.value || !lastQuestion.value) return
+
+  const fallbackMsgIndex = messageList.value.length - 1
+  messageList.value.splice(fallbackMsgIndex, 1)
+
+  const aiMsgIndex = messageList.value.length
+  messageList.value.push({ role: 'ai', content: '', status: 'loading' })
+  isDeepSearching.value = true
+  isGenerating.value = true
+  scrollToBottom()
+
+  try {
+    const res = await askRag(lastQuestion.value, true)
+    if (res.code === 200 && res.data) {
+      messageList.value[aiMsgIndex] = {
+        role: 'ai',
+        content: res.data.answer,
+        status: 'success',
+        sources: res.data.sources
+      }
+    } else {
+      messageList.value[aiMsgIndex] = {
+        role: 'ai',
+        content: '',
+        status: 'error',
+        errorMsg: res.msg || '超深度检索失败，请重试'
+      }
+      ElMessage.warning(res.msg || '检索失败')
+    }
+  } catch (error: any) {
+    messageList.value[aiMsgIndex] = {
+      role: 'ai',
+      content: '',
+      status: 'error',
+      errorMsg: '网络或服务异常'
+    }
+  } finally {
+    isGenerating.value = false
+    isDeepSearching.value = false
     scrollToBottom()
   }
 }
@@ -425,6 +501,34 @@ const sendMessage = async () => {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.fallback-actions {
+  margin-top: 8px;
+  padding: 12px;
+  background: var(--el-color-warning-light-9);
+  border: 1px solid var(--el-color-warning-light-5);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .fallback-notice {
+    font-size: 13px;
+    color: var(--el-color-warning-dark-2);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.5;
+  }
+
+  .deep-search-hint {
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
 }
 
 .sources-wrapper {
