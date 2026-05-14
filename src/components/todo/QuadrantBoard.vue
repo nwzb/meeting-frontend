@@ -64,9 +64,30 @@ const handleGlobalDragEnd = () => {
 </script>
 
 <style scoped lang="scss">
-.quadrant-board { height: 100%; display: flex; flex-direction: column; background: var(--el-bg-color-page); border-radius: 12px; }
-.board-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--el-border-color-light); }
-.header-title { display: flex; align-items: center; gap: 8px; .dot { width: 8px; height: 8px; border-radius: 50%; } h3 { margin: 0; font-size: 16px; font-weight: bold;} .count { background: var(--el-fill-color); padding: 2px 8px; border-radius: 10px; font-size: 12px; } }
+.quadrant-board {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--el-bg-color-page);
+  border-radius: 12px;
+  overflow: hidden; /* 防止内部溢出破坏圆角 */
+}
+.board-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--el-border-color-light);
+  flex-shrink: 0; /* 确保头部高度固定不被挤压 */
+}
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  h3 { margin: 0; font-size: 16px; font-weight: bold;}
+  .count { background: var(--el-fill-color); padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+}
 .board-header.theme-1 .dot { background-color: var(--el-color-danger); }
 .board-header.theme-2 .dot { background-color: var(--el-color-warning); }
 .board-header.theme-3 .dot { background-color: var(--el-color-primary); }
@@ -75,13 +96,22 @@ const handleGlobalDragEnd = () => {
 .board-content {
   flex: 1;
   padding: 16px;
-  overflow-y: auto;
+  overflow-y: auto; /* 核心：开启纵向滚动 */
   display: flex;
   flex-direction: column;
   position: relative;
+
+  /* 定制高级感滚动条 */
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--el-border-color-darker);
+    border-radius: 4px;
+    &:hover { background-color: var(--el-text-color-secondary); }
+  }
+  &::-webkit-scrollbar-track { background: transparent; }
 }
 
-/* 解决①：占满父级剩余空间 */
+/* 占满父级剩余空间 */
 .drag-area {
   flex: 1;
   min-height: 100px;

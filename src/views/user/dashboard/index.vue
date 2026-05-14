@@ -52,8 +52,8 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="24" :md="8" :lg="8" class="mb-xs-20">
+      <el-row :gutter="20" class="mb-20">
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" class="mb-xs-20">
           <el-card class="feishu-card" shadow="hover">
             <template #header>
               <div class="card-header">
@@ -61,12 +61,12 @@
               </div>
             </template>
             <div class="chart-box">
-              <SpeakerPieChart :data="statsData.speakerStats" />
+              <SpeakerBarChart :data="statsData.speakerStats" />
             </div>
           </el-card>
         </el-col>
 
-        <el-col :xs="24" :sm="24" :md="8" :lg="8" class="mb-xs-20">
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" class="mb-xs-20">
           <el-card class="feishu-card" shadow="hover">
             <template #header>
               <div class="card-header">
@@ -78,8 +78,10 @@
             </div>
           </el-card>
         </el-col>
+      </el-row>
 
-        <el-col :xs="24" :sm="24" :md="8" :lg="8">
+      <el-row :gutter="20" class="mb-20">
+        <el-col :span="24">
           <el-card class="feishu-card" shadow="hover">
             <template #header>
               <div class="card-header">
@@ -89,7 +91,7 @@
                 </el-tooltip>
               </div>
             </template>
-            <div class="chart-box">
+            <div class="chart-box wordcloud-box">
               <WordCloud :data="statsData.wordCloud" />
             </div>
           </el-card>
@@ -106,7 +108,7 @@ import { getDashboardStats } from '@/api/dashboard'
 import type { DashboardStatsVO } from '@/types/dashboard'
 import GlobalSearchInput from '@/components/dashboard/GlobalSearchInput.vue'
 import TrendChart from '@/components/dashboard/TrendChart.vue'
-import SpeakerPieChart from '@/components/dashboard/SpeakerPieChart.vue'
+import SpeakerBarChart from '@/components/dashboard/SpeakerBarChart.vue'
 import TopicPieChart from '@/components/dashboard/TopicPieChart.vue'
 import WordCloud from '@/components/dashboard/WordCloud.vue'
 import SuperAssistant from '@/components/dashboard/SuperAssistant.vue'
@@ -249,6 +251,7 @@ onMounted(() => fetchStatsData())
   }
 
   .chart-box { width: 100%; height: 320px; }
+  .wordcloud-box { height: 360px; }
   .trend-box { height: 360px; }
   .mb-20 { margin-bottom: 20px; }
 }

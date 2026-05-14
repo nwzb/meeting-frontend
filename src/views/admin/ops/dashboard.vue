@@ -69,22 +69,25 @@
     </el-row>
 
     <el-row :gutter="20" class="mb-20" v-loading="statsLoading">
-      <el-col :span="8">
+      <el-col :span="12">
         <el-card class="feishu-card" shadow="hover">
           <template #header><span class="title">全平台参会人数分布</span></template>
-          <div class="chart-box"><SpeakerPieChart :data="statsData.speakerStats" /></div>
+          <div class="chart-box"><SpeakerBarChart :data="statsData.speakerStats" /></div>
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="12">
         <el-card class="feishu-card" shadow="hover">
           <template #header><span class="title">全平台会议类型分布</span></template>
           <div class="chart-box"><TopicPieChart :data="statsData.topicStats" /></div>
         </el-card>
       </el-col>
-      <el-col :span="8">
+    </el-row>
+
+    <el-row :gutter="20" class="mb-20" v-loading="statsLoading">
+      <el-col :span="24">
         <el-card class="feishu-card" shadow="hover">
           <template #header><span class="title">全局高频关键词云</span></template>
-          <div class="chart-box"><WordCloud :data="statsData.wordCloud" /></div>
+          <div class="chart-box wordcloud-box"><WordCloud :data="statsData.wordCloud" /></div>
         </el-card>
       </el-col>
     </el-row>
@@ -97,7 +100,7 @@ import { getSystemStatus, getGlobalStats } from '@/api/admin'
 import type { OpsMonitorVO, AdminOpsStatsVO } from '@/types/dashboard'
 
 import TrendChart from '@/components/dashboard/TrendChart.vue'
-import SpeakerPieChart from '@/components/dashboard/SpeakerPieChart.vue'
+import SpeakerBarChart from '@/components/dashboard/SpeakerBarChart.vue'
 import TopicPieChart from '@/components/dashboard/TopicPieChart.vue'
 import WordCloud from '@/components/dashboard/WordCloud.vue'
 import ResourceBarChart from '@/components/dashboard/ResourceBarChart.vue'
@@ -276,6 +279,7 @@ onBeforeUnmount(() => {
   }
 
   .chart-box { height: 320px; width: 100%; }
+  .wordcloud-box { height: 360px; }
   .mb-20 { margin-bottom: 20px; }
 }
 </style>
